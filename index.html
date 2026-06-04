@@ -337,6 +337,15 @@
     font-size: 11px; color: var(--text3); line-height: 1.7;
   }
 
+  /* ═══════════════ EDITABLE PLACEHOLDERS ═══════════════ */
+  [data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3);
+    font-style: italic;
+    font-weight: 400;
+    pointer-events: none;
+  }
+
   /* ═══════════════ EXPORT STATE ═══════════════ */
   .ticket.exporting .ac-rm { display: none !important; }
   .ticket.exporting .add-ac { display: none !important; }
@@ -458,7 +467,7 @@
     <!-- ─── MAIN CONTENT ─── -->
     <main class="t-main">
 
-      <h1 class="issue-title" contenteditable="true" data-i18n="issueTitle">Oracle Database Corruption — Full Disaster Recovery</h1>
+      <h1 class="issue-title" contenteditable="true" data-i18n="issueTitle" data-ph="phTitle">Oracle Database Corruption — Full Disaster Recovery</h1>
 
       <div class="quick-acts">
         <button class="qa-btn" title="Create child issue">+</button>
@@ -476,9 +485,7 @@
           <span data-i18n="sectionDesc">Description</span>
         </div>
         <div class="sec-bd">
-          <div class="desc-body" contenteditable="true" data-i18n-html="descBody">
-            <p style="margin-bottom:10px">The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.</p>
-          </div>
+          <div class="desc-body" contenteditable="true" data-i18n="descBody" data-ph="phDesc">The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.</div>
 
         </div>
       </div>
@@ -492,17 +499,17 @@
           <ul class="ac-list" id="acList">
             <li>
               <span class="ac-cb"></span>
-              <span class="ac-txt" contenteditable="true" data-i18n="ac0">Deliver a 60-second post-mortem explaining why koalas are a liability to enterprise infrastructure.</span>
+              <span class="ac-txt" contenteditable="true" data-i18n="ac0" data-ph="phAC">Deliver a 60-second post-mortem explaining why koalas are a liability to enterprise infrastructure.</span>
               <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
             </li>
             <li>
               <span class="ac-cb"></span>
-              <span class="ac-txt" contenteditable="true" data-i18n="ac1">Execute the final "migration" to restore the production environment.</span>
+              <span class="ac-txt" contenteditable="true" data-i18n="ac1" data-ph="phAC">Execute the final "migration" to restore the production environment.</span>
               <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
             </li>
             <li>
               <span class="ac-cb"></span>
-              <span class="ac-txt" contenteditable="true" data-i18n="ac2">Close the ticket aloud with the sign-off: "Closing as Resolved. Will not fix again."</span>
+              <span class="ac-txt" contenteditable="true" data-i18n="ac2" data-ph="phAC">Close the ticket aloud with the sign-off: "Closing as Resolved. Will not fix again."</span>
               <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
             </li>
           </ul>
@@ -564,13 +571,13 @@
           <div class="f-row">
             <span class="f-label" data-i18n="labelStoryPoints">Story Points</span>
             <span class="f-val">
-              <span contenteditable="true" id="storyPoints">21</span>
+              <span contenteditable="true" id="storyPoints" data-ph="phPoints">21</span>
             </span>
           </div>
           <div class="f-row">
             <span class="f-label" data-i18n="labelSprint">Sprint</span>
             <span class="f-val">
-              <span class="pchip">⚡ <span contenteditable="true" data-i18n="sprintValue">Bachelor Party Q2</span></span>
+              <span class="pchip">⚡ <span contenteditable="true" data-i18n="sprintValue" data-ph="phSprint">Bachelor Party Q2</span></span>
             </span>
           </div>
         </div>
@@ -593,7 +600,7 @@
             <span class="f-label" data-i18n="labelReporter">Reporter</span>
             <span class="f-val">
               <span class="av rep">YO</span>
-              <span contenteditable="true" data-i18n="reporterName">You</span>
+              <span contenteditable="true" data-i18n="reporterName" data-ph="phName">You</span>
             </span>
           </div>
           <div class="f-row">
@@ -668,10 +675,16 @@ var translations = {
     prioMed:          'P2 — Medium',
     prioLow:          'P3 — Low',
     exportBtn:        '⬇ Export PNG',
+    phTitle:          'Add a title…',
+    phDesc:           'Add a description…',
+    phAC:             'Add a criterion…',
+    phSprint:         'Sprint name',
+    phPoints:         'SP',
+    phName:           'Name',
     projectName:      'Scrum Board',
     issueTitle:       'Oracle Database Corruption — Full Disaster Recovery',
     sectionDesc:      'Description',
-    descBody:         '<p style="margin-bottom:10px">The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.</p>',
+    descBody:         'The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.',
     noteText:         '🚨 PROD IS DOWN. All stakeholders have been paged. This is not a drill.',
     sectionAC:        'Acceptance Criteria',
     ac0:              'Deliver a 60-second post-mortem explaining why koalas are a liability to enterprise infrastructure.',
@@ -722,6 +735,12 @@ var translations = {
     prioMed:          'P2 — Közepes',
     prioLow:          'P3 — Alacsony',
     exportBtn:        '⬇ PNG Exportálás',
+    phTitle:          'Cím megadása…',
+    phDesc:           'Leírás megadása…',
+    phAC:             'Feltétel megadása…',
+    phSprint:         'Sprint neve',
+    phPoints:         'SP',
+    phName:           'Név',
     projectName:      'Scrum Tábla',
     issueTitle:       'Oracle Adatbázis Sérülés — Teljes Katasztrófa-elhárítás',
     sectionDesc:      'Leírás',
@@ -783,6 +802,12 @@ function applyLang(lang) {
     if (s[key] !== undefined) el.innerHTML = s[key];
   });
 
+  // Update placeholders to current language
+  document.querySelectorAll('[data-ph]').forEach(function(el) {
+    var key = el.getAttribute('data-ph');
+    if (s[key] !== undefined) el.setAttribute('data-placeholder', s[key]);
+  });
+
   // Reflect current priority dropdown in the ticket
   setPriority(document.getElementById('prioSel').value);
 
@@ -819,7 +844,7 @@ function addCriterion() {
   var li = document.createElement('li');
   li.innerHTML =
     '<span class="ac-cb"></span>' +
-    '<span class="ac-txt" contenteditable="true">' + s.newCriterion + '</span>' +
+    '<span class="ac-txt" contenteditable="true" data-placeholder="' + s.phAC + '"></span>' +
     '<button class="ac-rm" onclick="this.closest(\'li\').remove()" title="Remove">×</button>';
   document.getElementById('acList').appendChild(li);
   li.querySelector('.ac-txt').focus();
@@ -861,6 +886,12 @@ function exportPNG() {
 }
 
 // ─── BOOT ────────────────────────────────────────────────────────────────────
+// Clean up stray <br> browsers insert when a contenteditable is fully cleared
+document.addEventListener('input', function(e) {
+  if (e.target.hasAttribute('contenteditable') && e.target.innerHTML === '<br>') {
+    e.target.innerHTML = '';
+  }
+});
 applyLang(currentLang);
 </script>
 </body>
