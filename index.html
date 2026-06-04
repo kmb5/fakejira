@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ETL Ticket Maker</title>
+<title>DefinitelyNotJira</title>
 <style>
   :root {
     --ff: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
@@ -357,7 +357,7 @@
 
 <!-- ─── TOOLBAR ─── -->
 <div class="toolbar">
-  <span class="tb-title" data-i18n="toolbarTitle">🎫 ETL Ticket Maker</span>
+  <span class="tb-title" data-i18n="toolbarTitle">🎫 DefinitelyNotJira</span>
   <label>
     <span data-i18n="labelPriority">Priority</span>
     <select id="prioSel" onchange="setPriority(this.value)">
@@ -627,7 +627,7 @@
 // ─── TRANSLATIONS ───────────────────────────────────────────────────────────
 var translations = {
   en: {
-    toolbarTitle:     '🎫 ETL Ticket Maker',
+    toolbarTitle:     '🎫 DefinitelyNotJira',
     labelType:        'Type',
     optTask:          'Task',
     optStory:         'Story',
@@ -643,7 +643,7 @@ var translations = {
     prioMed:          'P2 — Medium',
     prioLow:          'P3 — Low',
     exportBtn:        '⬇ Export PNG',
-    projectName:      'ETL Support Board',
+    projectName:      'Scrum Board',
     issueTitle:       'Oracle Database Corruption — Full Disaster Recovery',
     sectionDesc:      'Description',
     descBody:         '<p style="margin-bottom:10px">The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.</p>',
@@ -681,7 +681,7 @@ var translations = {
     timestamps:       'Created 1 minute ago<br>Updated just now',
   },
   hu: {
-    toolbarTitle:     '🎫 ETL Jegy Készítő',
+    toolbarTitle:     '🎫 BiztosNemJira',
     labelType:        'Típus',
     optTask:          'Feladat',
     optStory:         'Sztori',
@@ -697,17 +697,17 @@ var translations = {
     prioMed:          'P2 — Közepes',
     prioLow:          'P3 — Alacsony',
     exportBtn:        '⬇ PNG Exportálás',
-    projectName:      'ETL Támogatási Tábla',
+    projectName:      'Scrum Tábla',
     issueTitle:       'Oracle Adatbázis Sérülés — Teljes Katasztrófa-elhárítás',
     sectionDesc:      'Leírás',
     descBody:         '<p style="margin-bottom:10px">Az elsődleges Oracle példány kompromittálódott. A kiváltó ok elemzése egy szélhámos koalára mutat, amely besurrant az adatközpontba és megszokott módon semmit sem tett, miközben értékes szerver helyet foglalt el. Tamas Gulyas az egyetlen ügyeletes mérnök, akinek jogosultsága van a katasztrófa-elhárítási forgatókönyv végrehajtására.</p>',
     noteText:         '🚨 A PROD LE VAN ÁLLVA. Minden érintett fél értesítve lett. Ez nem gyakorlat.',
-    sectionAC:        'Elfogadási Feltételek',
+    sectionAC:        'Elfogadási Kritériumok',
     ac0:              'Tarts egy 60 másodperces post-mortem összefoglalót arról, miért jelent kockázatot a koala a vállalati infrastruktúrára.',
     ac1:              'Hajtsd végre a végső „migrációt" a produkciós környezet helyreállításához.',
     ac2:              'Zárd le a jegyet hangosan ezzel az aláírással: „Lezárva mint Megoldott. Nem fogjuk megjavítani újra."',
-    addCriterion:     'Feltétel hozzáadása',
-    newCriterion:     'Új feltétel…',
+    addCriterion:     'Kritérium hozzáadása',
+    newCriterion:     'Új kritérium',
     sectionSubtasks:  'Alfeladatok',
     addSubtask:       'Alfeladat hozzáadása',
     sectionActivity:  'Tevékenység',
@@ -760,6 +760,9 @@ function applyLang(lang) {
 
   // Reflect current priority dropdown in the ticket
   setPriority(document.getElementById('prioSel').value);
+
+  // Update browser tab title
+  document.title = s.toolbarTitle.replace(/^\S+\s/, ''); // strip emoji
 
   // Push ?lang= to URL without reload
   var url = new URL(window.location.href);
