@@ -348,8 +348,33 @@
 
   /* ═══════════════ RESPONSIVE ═══════════════ */
   @media (max-width: 780px) {
+    body { padding: 10px; gap: 8px; }
+    .toolbar { padding: 6px 12px; gap: 8px; }
+    .tb-title { font-size: 12px; }
+    .t-nav { padding: 0 12px; }
+    /* hide expand + close buttons — not useful on mobile */
+    .nav-right .nav-btn:nth-child(n+4) { display: none; }
     .t-body { flex-direction: column; }
-    .t-sidebar { width: 100%; border-left: none; border-top: 2px solid var(--b); }
+    .t-main { padding: 14px 16px 22px; }
+    .issue-title { font-size: 17px; }
+    .t-sidebar {
+      width: 100%; border-left: none;
+      border-top: 2px solid var(--b);
+      padding: 12px 14px 18px;
+    }
+    .sb-top { flex-wrap: wrap; }
+    .f-label { width: 80px; }
+  }
+
+  /* ═══════════════ FORCE DESKTOP DURING MOBILE EXPORT ═══════════════ */
+  /* Higher specificity than the media query — no !important needed */
+  .force-desktop { width: 820px; max-width: 820px; }
+  .force-desktop .t-body { flex-direction: row; }
+  .force-desktop .t-sidebar {
+    width: 262px;
+    border-left: 2px solid var(--b);
+    border-top: none;
+    padding: 14px 14px 20px;
   }
 </style>
 </head>
@@ -812,10 +837,15 @@ function toggleSb(hd) {
 
 function exportPNG() {
   var node = document.getElementById('ticket');
+  var isMobile = window.innerWidth < 780;
   node.classList.add('exporting');
+  // On mobile, temporarily snap to desktop layout so the PNG is always A5-ish
+  if (isMobile) node.classList.add('force-desktop');
+
   htmlToImage.toPng(node, { pixelRatio: 2, backgroundColor: '#ffffff' })
     .then(function(dataUrl) {
       node.classList.remove('exporting');
+      if (isMobile) node.classList.remove('force-desktop');
       var key = (document.getElementById('issueKey').innerText || 'jira-ticket')
                   .trim().replace(/[^\w-]/g, '_');
       var a = document.createElement('a');
@@ -825,6 +855,7 @@ function exportPNG() {
     })
     .catch(function(e) {
       node.classList.remove('exporting');
+      if (isMobile) node.classList.remove('force-desktop');
       alert('Export failed: ' + e.message);
     });
 }
