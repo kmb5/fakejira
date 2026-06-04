@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETL Ticket Maker</title>
+<style>
+  :root {
+    --ff: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    --blue:    #0052CC;
+    --blue-dk: #0747A6;
+    --blue-lt: #DEEBFF;
+    --purple:  #6554C0;
+    --purp-lt: #EAE6FF;
+    --red:     #DE350B;
+    --red-lt:  #FFEBE6;
+    --green:   #00875A;
+    --grn-lt:  #E3FCEF;
+    --orange:  #FF991F;
+    --yel-lt:  #FFFAE6;
+    --text:    #172B4D;
+    --text2:   #626F86;
+    --text3:   #8993A4;
+    --link:    #0052CC;
+    --bg-page: #1D2330;
+    --bg:      #FFFFFF;
+    --bg-sub:  #F7F8F9;
+    --bg-hov:  #F4F5F7;
+    --b:       #EBECF0;
+    --b2:      #DFE1E6;
+    --sb-w:    262px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--ff);
+    background: var(--bg-page);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* ═══════════════ TOOLBAR ═══════════════ */
+  .toolbar {
+    width: 100%; max-width: 820px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 6px;
+    padding: 8px 16px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .tb-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.9); }
+  .toolbar label {
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,.42); text-transform: uppercase; letter-spacing: .06em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .toolbar select {
+    font-family: var(--ff); font-size: 12px; padding: 4px 7px;
+    border-radius: 3px; border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.09); color: #fff; cursor: pointer;
+  }
+  .toolbar select option { background: #1D2330; }
+  .tb-btn {
+    font-family: var(--ff); font-size: 12px; font-weight: 500;
+    padding: 5px 12px; border-radius: 3px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); cursor: pointer;
+  }
+  .tb-btn:hover { background: rgba(255,255,255,.15); }
+  .tb-btn.primary { background: var(--blue); border-color: var(--blue-dk); color: #fff; }
+  .tb-btn.primary:hover { background: var(--blue-dk); }
+  .tb-spacer { flex: 1; }
+
+  /* ═══════════════ TICKET CARD ═══════════════ */
+  .ticket {
+    width: 100%; max-width: 820px;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.25);
+  }
+
+  /* ═══════════════ TOP NAV BAR ═══════════════ */
+  .t-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; height: 38px;
+    background: var(--bg-sub);
+    border-bottom: 1px solid var(--b);
+  }
+  .nav-crumb { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+  .nav-crumb a {
+    color: var(--text2); text-decoration: none;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .nav-crumb a:hover { color: var(--text); text-decoration: underline; }
+  .nav-sep { color: var(--text3); }
+  /* Type icons in breadcrumb */
+  .t-icon { width: 14px; height: 14px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+  .t-bug   { background: var(--red); }
+  .t-task  { background: #4BADE8; }
+  .t-story { background: var(--purple); }
+
+  .nav-right { display: flex; align-items: center; gap: 4px; }
+  .nav-btn {
+    height: 28px; min-width: 28px; padding: 0 8px;
+    border: 1px solid var(--b); border-radius: 3px;
+    background: transparent; color: var(--text2);
+    font-family: var(--ff); font-size: 12px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    cursor: pointer;
+  }
+  .nav-btn:hover { background: var(--bg-hov); color: var(--text); }
+  .nav-btn.icon-only { width: 28px; min-width: 28px; padding: 0; border: none; }
+  .nav-btn.icon-only:hover { background: var(--bg-hov); border-radius: 3px; }
+
+  /* ═══════════════ BODY LAYOUT ═══════════════ */
+  .t-body { display: flex; min-height: 0; }
+
+  /* ═══════════════ MAIN COLUMN ═══════════════ */
+  .t-main { flex: 1; min-width: 0; padding: 18px 22px 28px; }
+
+  .issue-title {
+    font-size: 20px; font-weight: 700; line-height: 1.3;
+    color: var(--text); margin-bottom: 8px;
+    border-radius: 3px; outline: none;
+  }
+  .issue-title[contenteditable]:hover { background: var(--bg-hov); }
+  .issue-title[contenteditable]:focus {
+    background: var(--bg); box-shadow: 0 0 0 2px #4C9AFF;
+    padding: 4px 6px; margin: -4px -6px;
+  }
+
+  .quick-acts { display: flex; gap: 4px; margin-bottom: 14px; }
+  .qa-btn {
+    width: 28px; height: 28px;
+    border: 1px solid var(--b2); border-radius: 3px;
+    background: transparent; color: var(--text2); font-size: 16px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .qa-btn:hover { background: var(--bg-hov); color: var(--text); }
+
+  /* Section headers */
+  .sec { margin-bottom: 2px; }
+  .sec-hd {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 6px; margin-left: -6px;
+    font-size: 13px; font-weight: 700; color: var(--text);
+    border-radius: 3px; cursor: pointer; user-select: none;
+  }
+  .sec-hd:hover { background: var(--bg-hov); }
+  .sec-hd.no-click { cursor: default; }
+  .sec-hd.no-click:hover { background: transparent; }
+  .chev {
+    font-size: 10px; color: var(--text3);
+    transition: transform .17s; line-height: 1; flex-shrink: 0;
+  }
+  .sec-hd.closed .chev { transform: rotate(-90deg); }
+  .sec-bd { padding: 2px 0 10px; }
+  .sec-bd.hide { display: none; }
+
+  /* Description */
+  .desc-body {
+    font-size: 13px; line-height: 1.55; color: var(--text);
+    outline: none; border-radius: 3px; padding: 4px;
+  }
+  .desc-body[contenteditable]:hover { background: var(--bg-hov); }
+  .desc-body[contenteditable]:focus {
+    background: var(--bg); box-shadow: 0 0 0 2px #4C9AFF; padding: 8px;
+  }
+  .note-box {
+    background: var(--yel-lt); border-left: 3px solid var(--orange);
+    padding: 7px 10px; font-size: 12px;
+    border-radius: 0 3px 3px 0; margin-top: 10px;
+    outline: none;
+  }
+  .note-box[contenteditable]:hover { filter: brightness(.97); }
+  .note-box[contenteditable]:focus { box-shadow: 0 0 0 2px #4C9AFF; }
+
+  /* Acceptance Criteria */
+  .ac-list { list-style: none; }
+  .ac-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 4px 0; font-size: 13px; border-bottom: 1px solid var(--b);
+  }
+  .ac-list li:last-child { border-bottom: none; }
+  .ac-cb {
+    width: 15px; height: 15px; border: 2px solid var(--b2);
+    border-radius: 3px; flex-shrink: 0; margin-top: 3px;
+  }
+  .ac-txt { flex: 1; outline: none; border-radius: 2px; padding: 1px 3px; }
+  .ac-txt[contenteditable]:hover { background: var(--bg-hov); }
+  .ac-txt[contenteditable]:focus { background: var(--bg); box-shadow: 0 0 0 2px #4C9AFF; }
+  .ac-rm {
+    border: none; background: none; color: var(--b2); font-size: 16px;
+    line-height: 1; cursor: pointer; padding: 0 4px; opacity: 0; transition: opacity .1s;
+  }
+  .ac-list li:hover .ac-rm { opacity: 1; }
+  .ac-rm:hover { color: var(--red); }
+  .add-ac {
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
+    font-family: var(--ff); font-size: 13px; color: var(--text2);
+    background: none; border: none; cursor: pointer; padding: 3px 0;
+  }
+  .add-ac:hover { color: var(--text); }
+
+  /* Add link style (Subtasks, Linked items) */
+  .add-link { font-size: 14px; color: var(--text2); cursor: pointer; }
+  .add-link:hover { color: var(--link); text-decoration: underline; }
+
+  /* Comment composer */
+  .comment-row { display: flex; align-items: flex-start; gap: 10px; }
+  .c-av {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    background: var(--blue); color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .c-body { flex: 1; }
+  .c-input {
+    border: 1px solid var(--b); border-radius: 3px;
+    padding: 6px 10px; font-size: 13px; color: var(--text3); cursor: text;
+  }
+  .c-input:hover { border-color: var(--b2); }
+  .c-btns { display: flex; gap: 6px; margin-top: 5px; }
+  .c-btn {
+    font-family: var(--ff); font-size: 12px; padding: 4px 10px;
+    border: 1px solid var(--b); border-radius: 3px;
+    background: transparent; color: var(--text2); cursor: pointer;
+  }
+  .c-btn:hover { background: var(--bg-hov); color: var(--text); }
+
+  /* ═══════════════ SIDEBAR ═══════════════ */
+  .t-sidebar {
+    width: var(--sb-w); flex-shrink: 0;
+    border-left: 2px solid var(--b);
+    padding: 14px 14px 20px;
+    display: flex; flex-direction: column;
+  }
+
+  /* Status + action row */
+  .sb-top { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
+
+  .status-btn {
+    font-family: var(--ff); font-size: 13px; font-weight: 600;
+    padding: 5px 11px; border-radius: 3px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: filter .12s;
+  }
+  .status-btn:hover { filter: brightness(.92); }
+  /* Status variants */
+  .st-open { border: 1px solid var(--b2); background: #fff; color: var(--text); }
+  .st-prog { border: 1px solid var(--blue-dk); background: var(--blue); color: #fff; }
+  .st-done { border: 1px solid #006644; background: var(--green); color: #fff; }
+  .st-crit { border: 1px solid #BF2600; background: var(--red); color: #fff; }
+
+  .sb-icon-btn {
+    width: 30px; height: 30px; border: 1px solid var(--b2); border-radius: 3px;
+    background: #fff; color: var(--text2); font-size: 14px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .sb-icon-btn:hover { background: var(--bg-hov); }
+
+  .improve-btn {
+    font-family: var(--ff); font-size: 12px; font-weight: 500;
+    padding: 5px 10px; border: 1px solid #C5B4FF; border-radius: 3px;
+    background: #F0EBFF; color: var(--purple); cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .improve-btn:hover { background: #E0D3FF; }
+
+  /* Sidebar sections */
+  .sb-sec { border-top: 1px solid var(--b); padding: 7px 0; }
+  .sb-sec-hd {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600; color: var(--text);
+    cursor: pointer; user-select: none;
+    padding: 3px 4px; border-radius: 3px;
+  }
+  .sb-sec-hd:hover { background: var(--bg-hov); }
+  .sb-chev {
+    font-size: 9px; color: var(--text3);
+    transition: transform .17s; flex-shrink: 0;
+  }
+  .sb-sec-hd.closed .sb-chev { transform: rotate(-90deg); }
+  .sb-sec-bd { padding: 4px 0 0; }
+  .sb-sec-bd.hide { display: none; }
+  .more-prev { font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 2px; }
+
+  /* Field rows */
+  .f-row { display: flex; align-items: flex-start; padding: 4px 0; font-size: 13px; gap: 8px; }
+  .f-label { width: 80px; flex-shrink: 0; color: var(--text2); padding-top: 1px; }
+  .f-val { flex: 1; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; color: var(--text); }
+  .f-val.muted { color: var(--text3); }
+  .f-val [contenteditable]:hover { background: var(--bg-hov); border-radius: 2px; padding: 1px 3px; }
+  .f-val [contenteditable]:focus { background: var(--bg); box-shadow: 0 0 0 2px #4C9AFF; border-radius: 2px; padding: 1px 3px; outline: none; }
+
+  /* Avatar */
+  .av {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--blue); color: #fff; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .av.rep { background: var(--red); }
+
+  /* Label chip */
+  .lchip {
+    background: #DFE1E6; color: #42526E;
+    font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 3px;
+  }
+  .lchip[contenteditable]:hover { background: #D0D3D9; border-radius: 3px; }
+
+  /* Parent/sprint chip */
+  .pchip {
+    background: var(--purp-lt); color: var(--purple);
+    font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 3px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  /* Story points dot */
+  .sp-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--blue); color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  /* Override global contenteditable rules so the circle stays blue on focus */
+  .sp-dot[contenteditable]:hover { background: var(--blue-dk); box-shadow: none; }
+  .sp-dot[contenteditable]:focus { background: var(--blue); color: #fff; box-shadow: 0 0 0 2px #4C9AFF; }
+
+  /* Priority icon */
+  .prio-ic { font-weight: 900; font-size: 14px; }
+
+  /* Automation section */
+  .auto-hd {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: 600; margin-bottom: 6px;
+  }
+  .refresh-btn {
+    font-family: var(--ff); font-size: 12px; color: var(--text2);
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .refresh-btn:hover { color: var(--text); }
+  .auto-link { color: var(--link); font-size: 13px; text-decoration: none; cursor: pointer; }
+  .auto-link:hover { text-decoration: underline; }
+
+  /* Timestamps */
+  .sb-ts {
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--b);
+    font-size: 11px; color: var(--text3); line-height: 1.7;
+  }
+
+  /* ═══════════════ EXPORT STATE ═══════════════ */
+  .ticket.exporting .ac-rm { display: none !important; }
+  .ticket.exporting .add-ac { display: none !important; }
+  .ticket.exporting [contenteditable]:hover,
+  .ticket.exporting [contenteditable]:focus {
+    background: transparent !important; box-shadow: none !important;
+    padding: revert !important; margin: revert !important;
+  }
+
+  /* ═══════════════ RESPONSIVE ═══════════════ */
+  @media (max-width: 780px) {
+    .t-body { flex-direction: column; }
+    .t-sidebar { width: 100%; border-left: none; border-top: 2px solid var(--b); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── TOOLBAR ─── -->
+<div class="toolbar">
+  <span class="tb-title">🎫 ETL Ticket Maker</span>
+  <label>Type
+    <select id="typeSel" onchange="setType(this.value)">
+      <option value="task">Task</option>
+      <option value="story">Story</option>
+      <option value="bug" selected>Bug</option>
+    </select>
+  </label>
+  <label>Status
+    <select id="statusSel" onchange="setStatus(this.value)">
+      <option value="todo">Open</option>
+      <option value="prog">In Progress</option>
+      <option value="done">Done</option>
+      <option value="crit" selected>Escalated</option>
+    </select>
+  </label>
+  <label>Priority
+    <select id="prioSel" onchange="setPriority(this.value)">
+      <option value="crit" selected>P0 — Critical</option>
+      <option value="high">P1 — High</option>
+      <option value="med">P2 — Medium</option>
+      <option value="low">P3 — Low</option>
+    </select>
+  </label>
+  <div class="tb-spacer"></div>
+  <button class="tb-btn primary" onclick="exportPNG()">⬇ Export PNG</button>
+</div>
+
+<!-- ─── TICKET ─── -->
+<div class="ticket" id="ticket">
+
+  <!-- TOP NAV BAR -->
+  <nav class="t-nav">
+    <div class="nav-crumb">
+      <a href="#">
+        <!-- Project icon: purple lightning (Story/Epic style) -->
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect width="14" height="14" rx="2" fill="#6554C0"/>
+          <path d="M8.1 2L4.5 7.8h3l-1.6 4.2L11 6.2H8L8.1 2z" fill="white"/>
+        </svg>
+        <span contenteditable="true" id="projectName">ETL Support Board</span>
+      </a>
+      <span class="nav-sep">/</span>
+      <a href="#">
+        <span class="t-icon t-bug" id="typeIcon"></span>
+        <span contenteditable="true" id="issueKey">SEV1-0001</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        1
+      </button>
+      <button class="nav-btn icon-only" title="Share">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+      </button>
+      <button class="nav-btn icon-only" title="More options">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+        </svg>
+      </button>
+      <button class="nav-btn icon-only" title="Expand">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+      </button>
+      <button class="nav-btn icon-only" title="Close">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- BODY: two columns -->
+  <div class="t-body">
+
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="t-main">
+
+      <h1 class="issue-title" contenteditable="true">Oracle Database Corruption — Full Disaster Recovery</h1>
+
+      <div class="quick-acts">
+        <button class="qa-btn" title="Create child issue">+</button>
+        <button class="qa-btn" title="Link issue">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Description -->
+      <div class="sec">
+        <div class="sec-hd" onclick="toggleSec(this)">
+          <span class="chev">▾</span> Description
+        </div>
+        <div class="sec-bd">
+          <div class="desc-body" contenteditable="true">
+            <p style="margin-bottom:10px">The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.</p>
+          </div>
+          <div class="note-box" contenteditable="true">🚨 PROD IS DOWN. All stakeholders have been paged. This is not a drill.</div>
+        </div>
+      </div>
+
+      <!-- Acceptance Criteria -->
+      <div class="sec">
+        <div class="sec-hd" onclick="toggleSec(this)">
+          <span class="chev">▾</span> Acceptance Criteria
+        </div>
+        <div class="sec-bd">
+          <ul class="ac-list" id="acList">
+            <li>
+              <span class="ac-cb"></span>
+              <span class="ac-txt" contenteditable="true">Deliver a 60-second post-mortem explaining why koalas are a liability to enterprise infrastructure.</span>
+              <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
+            </li>
+            <li>
+              <span class="ac-cb"></span>
+              <span class="ac-txt" contenteditable="true">Execute the final "migration" to restore the production environment.</span>
+              <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
+            </li>
+            <li>
+              <span class="ac-cb"></span>
+              <span class="ac-txt" contenteditable="true">Close the ticket aloud with the sign-off: "Closing as Resolved. Will not fix again."</span>
+              <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
+            </li>
+          </ul>
+          <button class="add-ac" onclick="addCriterion()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add criterion
+          </button>
+        </div>
+      </div>
+
+      <!-- Subtasks -->
+      <div class="sec">
+        <div class="sec-hd" onclick="toggleSec(this)">
+          <span class="chev">▾</span> Subtasks
+        </div>
+        <div class="sec-bd">
+          <span class="add-link">Add subtask</span>
+        </div>
+      </div>
+
+      <!-- Activity -->
+      <div class="sec">
+        <div class="sec-hd" onclick="toggleSec(this)">
+          <span class="chev">▾</span> Activity
+        </div>
+        <div class="sec-bd">
+          <div class="comment-row">
+            <div class="c-av">TG</div>
+            <div class="c-body">
+              <div class="c-input">Add a comment…</div>
+              <div class="c-btns">
+                <button class="c-btn">Suggest a reply…</button>
+                <button class="c-btn">Status update…</button>
+                <button class="c-btn">Thanks…</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="t-sidebar">
+
+      <!-- Status + action buttons (top, outside sections) -->
+      <div class="sb-top">
+        <button class="status-btn st-crit" id="statusBtn">Escalated ▾</button>
+        <button class="sb-icon-btn" title="Automation">⚡</button>
+        <button class="improve-btn">✦ Improve Story</button>
+      </div>
+
+      <!-- Your pinned fields -->
+      <div class="sb-sec">
+        <div class="sb-sec-hd" onclick="toggleSb(this)">
+          <span class="sb-chev">▾</span>
+          Your pinned fields
+        </div>
+        <div class="sb-sec-bd">
+          <div class="f-row">
+            <span class="f-label">Story Points</span>
+            <span class="f-val">
+              <span class="sp-dot" contenteditable="true">21</span>
+            </span>
+          </div>
+          <div class="f-row">
+            <span class="f-label">Sprint</span>
+            <span class="f-val">
+              <span class="pchip">⚡ <span contenteditable="true">Bachelor Party Q2</span></span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="sb-sec">
+        <div class="sb-sec-hd" onclick="toggleSb(this)">
+          <span class="sb-chev">▾</span>
+          Details
+        </div>
+        <div class="sb-sec-bd">
+          <div class="f-row">
+            <span class="f-label">Assignee</span>
+            <span class="f-val">
+              <span class="av">TG</span>
+              <span contenteditable="true">Tamas Gulyas</span>
+            </span>
+          </div>
+          <div class="f-row">
+            <span class="f-label">Reporter</span>
+            <span class="f-val">
+              <span class="av rep">YO</span>
+              <span contenteditable="true">You</span>
+            </span>
+          </div>
+          <div class="f-row">
+            <span class="f-label">Labels</span>
+            <span class="f-val">
+              <span class="lchip" contenteditable="true">oracle</span>
+              <span class="lchip" contenteditable="true">sev1</span>
+              <span class="lchip" contenteditable="true">koala-incident</span>
+            </span>
+          </div>
+          <div class="f-row">
+            <span class="f-label">Due date</span>
+            <span class="f-val muted">None</span>
+          </div>
+          <div class="f-row">
+            <span class="f-label">Goals</span>
+            <span class="f-val muted">None</span>
+          </div>
+          <div class="f-row">
+            <span class="f-label">Priority</span>
+            <span class="f-val">
+              <span class="prio-ic" id="prioIcon" style="color:#BF2600">⌃</span>
+              <span id="prioText">P0 — Critical</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Development (collapsed) -->
+      <div class="sb-sec">
+        <div class="sb-sec-hd closed" onclick="toggleSb(this)">
+          <span class="sb-chev">▾</span>
+          Development
+        </div>
+        <div class="sb-sec-bd hide"></div>
+      </div>
+
+      <!-- More fields (collapsed, with inline preview) -->
+      <div class="sb-sec">
+        <div class="sb-sec-hd closed" onclick="toggleSb(this)">
+          <span class="sb-chev">▾</span>
+          More fields
+          <span class="more-prev">Original estimate, Time tracking, Components, T…</span>
+        </div>
+        <div class="sb-sec-bd hide"></div>
+      </div>
+
+      <!-- Timestamps -->
+      <div class="sb-ts" contenteditable="true">
+        Created 1 minute ago<br>
+        Updated just now · SLA breached
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+<script>
+  function setType(v) {
+    document.getElementById('typeIcon').className = 't-icon t-' + v;
+  }
+
+  function setStatus(v) {
+    var map = {
+      todo: ['st-open', 'Open'],
+      prog: ['st-prog', 'In Progress'],
+      done: ['st-done', 'Done'],
+      crit: ['st-crit', 'Escalated']
+    };
+    var btn = document.getElementById('statusBtn');
+    btn.className = 'status-btn ' + map[v][0];
+    btn.textContent = map[v][1] + ' ▾';
+  }
+
+  function setPriority(v) {
+    var map = {
+      crit: ['⌃', '#BF2600', 'P0 — Critical'],
+      high: ['⌃', '#FF8B00', 'P1 — High'],
+      med:  ['＝', '#FFAB00', 'P2 — Medium'],
+      low:  ['⌄', '#2684FF', 'P3 — Low']
+    };
+    document.getElementById('prioIcon').textContent = map[v][0];
+    document.getElementById('prioIcon').style.color  = map[v][1];
+    document.getElementById('prioText').textContent  = map[v][2];
+  }
+
+  function addCriterion() {
+    var li = document.createElement('li');
+    li.innerHTML =
+      '<span class="ac-cb"></span>' +
+      '<span class="ac-txt" contenteditable="true">New criterion…</span>' +
+      '<button class="ac-rm" onclick="this.closest(\'li\').remove()" title="Remove">×</button>';
+    document.getElementById('acList').appendChild(li);
+    li.querySelector('.ac-txt').focus();
+  }
+
+  function toggleSec(hd) {
+    hd.classList.toggle('closed');
+    hd.nextElementSibling.classList.toggle('hide');
+  }
+
+  function toggleSb(hd) {
+    hd.classList.toggle('closed');
+    hd.nextElementSibling.classList.toggle('hide');
+  }
+
+  function exportPNG() {
+    var node = document.getElementById('ticket');
+    node.classList.add('exporting');
+    // html-to-image uses SVG foreignObject so the browser renders text natively —
+    // no more smashed-together characters from html2canvas font metric bugs.
+    htmlToImage.toPng(node, { pixelRatio: 2, backgroundColor: '#ffffff' })
+      .then(function(dataUrl) {
+        node.classList.remove('exporting');
+        var key = (document.getElementById('issueKey').innerText || 'jira-ticket')
+                    .trim().replace(/[^\w-]/g, '_');
+        var a = document.createElement('a');
+        a.download = key + '.png';
+        a.href = dataUrl;
+        a.click();
+      })
+      .catch(function(e) {
+        node.classList.remove('exporting');
+        alert('Export failed: ' + e.message);
+      });
+  }
+</script>
+</body>
+</html>
