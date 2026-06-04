@@ -276,15 +276,7 @@
   }
   .sb-icon-btn:hover { background: var(--bg-hov); }
 
-  .improve-btn {
-    font-family: var(--ff); font-size: 12px; font-weight: 500;
-    padding: 5px 10px; border: 1px solid #C5B4FF; border-radius: 3px;
-    background: #F0EBFF; color: var(--purple); cursor: pointer;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .improve-btn:hover { background: #E0D3FF; }
-
-  /* Sidebar sections */
+  /* Status badge (static, always Open) */
   .sb-sec { border-top: 1px solid var(--b); padding: 7px 0; }
   .sb-sec-hd {
     display: flex; align-items: center; gap: 6px;
@@ -372,23 +364,6 @@
 <div class="toolbar">
   <span class="tb-title" data-i18n="toolbarTitle">🎫 ETL Ticket Maker</span>
   <label>
-    <span data-i18n="labelType">Type</span>
-    <select id="typeSel" onchange="setType(this.value)">
-      <option value="task" data-i18n="optTask">Task</option>
-      <option value="story" data-i18n="optStory">Story</option>
-      <option value="bug" selected data-i18n="optBug">Bug</option>
-    </select>
-  </label>
-  <label>
-    <span data-i18n="labelStatus">Status</span>
-    <select id="statusSel" onchange="setStatus(this.value)">
-      <option value="todo" data-i18n="statusOpen">Open</option>
-      <option value="prog" data-i18n="statusProg">In Progress</option>
-      <option value="done" data-i18n="statusDone">Done</option>
-      <option value="crit" selected data-i18n="statusCrit">Escalated</option>
-    </select>
-  </label>
-  <label>
     <span data-i18n="labelPriority">Priority</span>
     <select id="prioSel" onchange="setPriority(this.value)">
       <option value="crit" selected data-i18n="prioCrit">P0 — Critical</option>
@@ -420,7 +395,7 @@
       </a>
       <span class="nav-sep">/</span>
       <a href="#">
-        <span class="t-icon t-bug" id="typeIcon"></span>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAHXRFWHRqaXJhLXN5c3RlbS1pbWFnZS10eXBlAGF2YXRhcuQCGmEAAAK0SURBVHhebZBbSNNRHMfPphTYzLQsxGEo2EoUcxUJWXM3XLq55W3L20zXciJqYpCXKOdleMeZaJJpkhJB2oNYr/bSg4ZQDxFpCaZZGWm1sYvu2/lrxDb8wu/hHL6f7+97DiG7KCEhkS0QiPIViktPU1KUEwKBuJTe7fH2eai88kYwnVxq9pVdlI8YjU1oaDShvKISak0OhCLpc6FQ6kc9ejocb54J8Kczl5aunmo2teJmdR20BTpczslDeoYaKXIlFKlpc9QzTWf3NprsvLgi3TVXZ5cZOr3BI0CuUEEsSWKC4r25/xKev3BdrytEUUE+stWZUGekIV2lhEohhyJZBplUAupp9+aY+k/ovJy8cmzRPhkLx9RpOEYDYR3kYqM7ArbhOFju8WEfise0jrf87xkj7gFRdwxa/kqNj23rIQtL5b742XIIzgeRsJqPY+FqEGalbDh6Y7FWG+bqKUgSU4bn1oGQGTE5ZzGzYRvgYC7ZB4slgXAOxsDaHY1vdeGY1wZgqy8Kjg4uqDfTA2b0Suybszm8H3gcBtfoCWCUD+d9Pqxd0cDQGbj6o2Fv4wKddIGMVHnAtA67PzdxenOYGsZ2YDw6C+fAKVg66HkgBkuGA8xmWOsIxrN4E5RhuQfkm/RZ8xZzOCw9PHzUH8QPYyScffTzWiKA3qOwNfrheymB/TZBV6H8F2WS3QNe1Bu0sas13I2VqtDtTTMSgt/NNLDpCFbL/LBexQJMBGtlxNlepFJSZsw9YLvOO82+uw5ae7E4mH6aP2ytofhzay9eSwneZxK4aMAHDRl3ZzxENx9erghZZt7M1Ha2cGCp3Xm3o57gawlZnxGRSG/OQ7MS1snPJQFLm20cOBtYsNQQbDURfCkma7SJyNu/q2iToDdyUv0pj0wsZJNnb1OJkd6FePsY/QUf6H8EUOnV4QAAAABJRU5ErkJggg==" width="16" height="16" style="border-radius:2px;flex-shrink:0;display:inline-block;" alt="Bug">
         <span contenteditable="true" id="issueKey">SEV1-0001</span>
       </a>
     </div>
@@ -556,9 +531,8 @@
     <aside class="t-sidebar">
 
       <div class="sb-top">
-        <button class="status-btn st-crit" id="statusBtn">Escalated ▾</button>
+        <span class="status-btn st-open" data-i18n="statusOpen">Open</span>
         <button class="sb-icon-btn" title="Automation">⚡</button>
-        <button class="improve-btn" data-i18n="improveStory">✦ Improve Story</button>
       </div>
 
       <!-- Your pinned fields -->
@@ -607,7 +581,6 @@
             <span class="f-val">
               <span class="lchip" contenteditable="true">oracle</span>
               <span class="lchip" contenteditable="true">sev1</span>
-              <span class="lchip" contenteditable="true">koala-incident</span>
             </span>
           </div>
           <div class="f-row">
@@ -647,7 +620,7 @@
 
       <!-- Timestamps -->
       <div class="sb-ts" data-i18n-html="timestamps">
-        Created 1 minute ago<br>Updated just now · SLA breached
+        Created 1 minute ago<br>Updated just now
       </div>
 
     </aside>
@@ -710,7 +683,7 @@ var translations = {
     sectionDev:       'Development',
     sectionMoreFields: 'More fields',
     morePreview:      'Original estimate, Time tracking, Components, T…',
-    timestamps:       'Created 1 minute ago<br>Updated just now · SLA breached',
+    timestamps:       'Created 1 minute ago<br>Updated just now',
   },
   hu: {
     toolbarTitle:     '🎫 ETL Jegy Készítő',
@@ -764,7 +737,7 @@ var translations = {
     sectionDev:       'Fejlesztés',
     sectionMoreFields: 'További mezők',
     morePreview:      'Eredeti becslés, Időkövetés, Komponensek, T…',
-    timestamps:       'Létrehozva 1 perce<br>Frissítve az imént · SLA megsértve',
+    timestamps:       'Létrehozva 1 perce<br>Frissítve az imént',
   }
 };
 
@@ -790,8 +763,7 @@ function applyLang(lang) {
     if (s[key] !== undefined) el.innerHTML = s[key];
   });
 
-  // Reflect current status + priority dropdowns in the ticket
-  setStatus(document.getElementById('statusSel').value);
+  // Reflect current priority dropdown in the ticket
   setPriority(document.getElementById('prioSel').value);
 
   // Push ?lang= to URL without reload
@@ -806,23 +778,6 @@ function applyLang(lang) {
 }
 
 // ─── TYPE / STATUS / PRIORITY ────────────────────────────────────────────────
-function setType(v) {
-  document.getElementById('typeIcon').className = 't-icon t-' + v;
-}
-
-function setStatus(v) {
-  var s = translations[currentLang] || translations.en;
-  var map = {
-    todo: ['st-open', s.statusOpen],
-    prog: ['st-prog', s.statusProg],
-    done: ['st-done', s.statusDone],
-    crit: ['st-crit', s.statusCrit]
-  };
-  var btn = document.getElementById('statusBtn');
-  btn.className = 'status-btn ' + map[v][0];
-  btn.textContent = map[v][1] + ' ▾';
-}
-
 function setPriority(v) {
   var s = translations[currentLang] || translations.en;
   var map = {
