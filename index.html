@@ -165,11 +165,8 @@
     display: flex; align-items: center; gap: 8px;
     padding: 5px 6px; margin-left: -6px;
     font-size: 13px; font-weight: 700; color: var(--text);
-    border-radius: 3px; cursor: pointer; user-select: none;
+    border-radius: 3px;
   }
-  .sec-hd:hover { background: var(--bg-hov); }
-  .sec-hd.no-click { cursor: default; }
-  .sec-hd.no-click:hover { background: transparent; }
   .chev {
     font-size: 10px; color: var(--text3);
     transition: transform .17s; line-height: 1; flex-shrink: 0;
@@ -281,10 +278,8 @@
   .sb-sec-hd {
     display: flex; align-items: center; gap: 6px;
     font-size: 13px; font-weight: 600; color: var(--text);
-    cursor: pointer; user-select: none;
     padding: 3px 4px; border-radius: 3px;
   }
-  .sb-sec-hd:hover { background: var(--bg-hov); }
   .sb-chev {
     font-size: 9px; color: var(--text3);
     transition: transform .17s; flex-shrink: 0;
@@ -452,8 +447,8 @@
 
       <!-- Description -->
       <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <span class="chev">▾</span><span data-i18n="sectionDesc">Description</span>
+        <div class="sec-hd">
+          <span data-i18n="sectionDesc">Description</span>
         </div>
         <div class="sec-bd">
           <div class="desc-body" contenteditable="true" data-i18n-html="descBody">
@@ -465,8 +460,8 @@
 
       <!-- Acceptance Criteria -->
       <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <span class="chev">▾</span><span data-i18n="sectionAC">Acceptance Criteria</span>
+        <div class="sec-hd">
+          <span data-i18n="sectionAC">Acceptance Criteria</span>
         </div>
         <div class="sec-bd">
           <ul class="ac-list" id="acList">
@@ -497,8 +492,8 @@
 
       <!-- Subtasks -->
       <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <span class="chev">▾</span><span data-i18n="sectionSubtasks">Subtasks</span>
+        <div class="sec-hd">
+          <span data-i18n="sectionSubtasks">Subtasks</span>
         </div>
         <div class="sec-bd">
           <span class="add-link" data-i18n="addSubtask">Add subtask</span>
@@ -507,8 +502,8 @@
 
       <!-- Activity -->
       <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <span class="chev">▾</span><span data-i18n="sectionActivity">Activity</span>
+        <div class="sec-hd">
+          <span data-i18n="sectionActivity">Activity</span>
         </div>
         <div class="sec-bd">
           <div class="comment-row">
@@ -537,8 +532,8 @@
 
       <!-- Your pinned fields -->
       <div class="sb-sec">
-        <div class="sb-sec-hd" onclick="toggleSb(this)">
-          <span class="sb-chev">▾</span><span data-i18n="pinnedFields">Your pinned fields</span>
+        <div class="sb-sec-hd">
+          <span data-i18n="pinnedFields">Your pinned fields</span>
         </div>
         <div class="sb-sec-bd">
           <div class="f-row">
@@ -558,8 +553,8 @@
 
       <!-- Details -->
       <div class="sb-sec">
-        <div class="sb-sec-hd" onclick="toggleSb(this)">
-          <span class="sb-chev">▾</span><span data-i18n="sectionDetails">Details</span>
+        <div class="sb-sec-hd">
+          <span data-i18n="sectionDetails">Details</span>
         </div>
         <div class="sb-sec-bd">
           <div class="f-row">
@@ -603,19 +598,19 @@
 
       <!-- Development (collapsed) -->
       <div class="sb-sec">
-        <div class="sb-sec-hd closed" onclick="toggleSb(this)">
-          <span class="sb-chev">▾</span><span data-i18n="sectionDev">Development</span>
+        <div class="sb-sec-hd">
+          <span data-i18n="sectionDev">Development</span>
         </div>
-        <div class="sb-sec-bd hide"></div>
+        <div class="sb-sec-bd"></div>
       </div>
 
       <!-- More fields (collapsed) -->
       <div class="sb-sec">
-        <div class="sb-sec-hd closed" onclick="toggleSb(this)">
-          <span class="sb-chev">▾</span><span data-i18n="sectionMoreFields">More fields</span>
+        <div class="sb-sec-hd">
+          <span data-i18n="sectionMoreFields">More fields</span>
           <span class="more-prev" data-i18n="morePreview">Original estimate, Time tracking, Components, T…</span>
         </div>
-        <div class="sb-sec-bd hide"></div>
+        <div class="sb-sec-bd"></div>
       </div>
 
       <!-- Timestamps -->
