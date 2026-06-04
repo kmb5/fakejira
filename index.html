@@ -467,7 +467,7 @@
     <!-- ─── MAIN CONTENT ─── -->
     <main class="t-main">
 
-      <h1 class="issue-title" contenteditable="true" data-i18n="issueTitle" data-ph="phTitle">Oracle Database Corruption — Full Disaster Recovery</h1>
+      <h1 class="issue-title" contenteditable="true" data-ph="phTitle"></h1>
 
       <div class="quick-acts">
         <button class="qa-btn" title="Create child issue">+</button>
@@ -485,7 +485,7 @@
           <span data-i18n="sectionDesc">Description</span>
         </div>
         <div class="sec-bd">
-          <div class="desc-body" contenteditable="true" data-i18n="descBody" data-ph="phDesc">The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.</div>
+          <div class="desc-body" contenteditable="true" data-ph="phDesc"></div>
 
         </div>
       </div>
@@ -499,17 +499,17 @@
           <ul class="ac-list" id="acList">
             <li>
               <span class="ac-cb"></span>
-              <span class="ac-txt" contenteditable="true" data-i18n="ac0" data-ph="phAC">Deliver a 60-second post-mortem explaining why koalas are a liability to enterprise infrastructure.</span>
+              <span class="ac-txt" contenteditable="true" data-ph="phAC"></span>
               <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
             </li>
             <li>
               <span class="ac-cb"></span>
-              <span class="ac-txt" contenteditable="true" data-i18n="ac1" data-ph="phAC">Execute the final "migration" to restore the production environment.</span>
+              <span class="ac-txt" contenteditable="true" data-ph="phAC"></span>
               <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
             </li>
             <li>
               <span class="ac-cb"></span>
-              <span class="ac-txt" contenteditable="true" data-i18n="ac2" data-ph="phAC">Close the ticket aloud with the sign-off: "Closing as Resolved. Will not fix again."</span>
+              <span class="ac-txt" contenteditable="true" data-ph="phAC"></span>
               <button class="ac-rm" onclick="this.closest('li').remove()" title="Remove">×</button>
             </li>
           </ul>
@@ -571,13 +571,13 @@
           <div class="f-row">
             <span class="f-label" data-i18n="labelStoryPoints">Story Points</span>
             <span class="f-val">
-              <span contenteditable="true" id="storyPoints" data-ph="phPoints">21</span>
+              <span contenteditable="true" id="storyPoints" data-ph="phPoints"></span>
             </span>
           </div>
           <div class="f-row">
             <span class="f-label" data-i18n="labelSprint">Sprint</span>
             <span class="f-val">
-              <span class="pchip">⚡ <span contenteditable="true" data-i18n="sprintValue" data-ph="phSprint">Bachelor Party Q2</span></span>
+              <span class="pchip">⚡ <span contenteditable="true" data-ph="phSprint"></span></span>
             </span>
           </div>
         </div>
@@ -682,16 +682,9 @@ var translations = {
     phPoints:         'SP',
     phName:           'Name',
     projectName:      'Scrum Board',
-    issueTitle:       'Oracle Database Corruption — Full Disaster Recovery',
     sectionDesc:      'Description',
-    descBody:         'The primary Oracle instance has been compromised. Root-cause analysis points to a rogue koala that infiltrated the data center and, true to form, contributed nothing useful while occupying valuable rack space. Tamas Gulyas is the only on-call engineer with clearance to execute the disaster-recovery runbook.',
-    noteText:         '🚨 PROD IS DOWN. All stakeholders have been paged. This is not a drill.',
     sectionAC:        'Acceptance Criteria',
-    ac0:              'Deliver a 60-second post-mortem explaining why koalas are a liability to enterprise infrastructure.',
-    ac1:              'Execute the final "migration" to restore the production environment.',
-    ac2:              'Close the ticket aloud with the sign-off: "Closing as Resolved. Will not fix again."',
     addCriterion:     'Add criterion',
-    newCriterion:     'New criterion…',
     sectionSubtasks:  'Subtasks',
     addSubtask:       'Add subtask',
     sectionActivity:  'Activity',
@@ -703,7 +696,6 @@ var translations = {
     pinnedFields:     'Your pinned fields',
     labelStoryPoints: 'Story Points',
     labelSprint:      'Sprint',
-    sprintValue:      'Bachelor Party Q2',
     sectionDetails:   'Details',
     labelAssignee:    'Assignee',
     labelReporter:    'Reporter',
@@ -742,16 +734,9 @@ var translations = {
     phPoints:         'SP',
     phName:           'Név',
     projectName:      'Scrum Tábla',
-    issueTitle:       'Oracle Adatbázis Sérülés — Teljes Katasztrófa-elhárítás',
     sectionDesc:      'Leírás',
-    descBody:         '<p style="margin-bottom:10px">Az elsődleges Oracle példány kompromittálódott. A kiváltó ok elemzése egy szélhámos koalára mutat, amely besurrant az adatközpontba és megszokott módon semmit sem tett, miközben értékes szerver helyet foglalt el. Tamas Gulyas az egyetlen ügyeletes mérnök, akinek jogosultsága van a katasztrófa-elhárítási forgatókönyv végrehajtására.</p>',
-    noteText:         '🚨 A PROD LE VAN ÁLLVA. Minden érintett fél értesítve lett. Ez nem gyakorlat.',
     sectionAC:        'Elfogadási Kritériumok',
-    ac0:              'Tarts egy 60 másodperces post-mortem összefoglalót arról, miért jelent kockázatot a koala a vállalati infrastruktúrára.',
-    ac1:              'Hajtsd végre a végső „migrációt" a produkciós környezet helyreállításához.',
-    ac2:              'Zárd le a jegyet hangosan ezzel az aláírással: „Lezárva mint Megoldott. Nem fogjuk megjavítani újra."',
     addCriterion:     'Kritérium hozzáadása',
-    newCriterion:     'Új kritérium',
     sectionSubtasks:  'Alfeladatok',
     addSubtask:       'Alfeladat hozzáadása',
     sectionActivity:  'Tevékenység',
@@ -763,7 +748,6 @@ var translations = {
     pinnedFields:     'Rögzített mezők',
     labelStoryPoints: 'Sztoripontok',
     labelSprint:      'Sprint',
-    sprintValue:      'Legénybúcsú Q2',
     sectionDetails:   'Részletek',
     labelAssignee:    'Felelős',
     labelReporter:    'Bejelentő',
